@@ -8,17 +8,20 @@ from typing import Optional, Tuple
 import telegram
 from telegram.ext import Application,CommandHandler, MessageHandler, CallbackQueryHandler, InlineQueryHandler, ContextTypes, filters,ChatMemberHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ChatMemberUpdated, ChatMember, Chat
-#import Memcached 
-import memcache
 #my imports
-#from game import start_game
-#from chat import functions about chat
+from db import Database
+from game import Game
 
 load_dotenv()
 
+# create database object
+db = Database(os.getenv("db_file"))
+# create table if not exists
+db.create_tables()
+
 # get API_KEY from .env file
 API_KEY = os.getenv("API_KEY")
-languages = ['ru','en','es']
+languages = os.getenv('LANGUAGES').split(',')
 
 translation = gettext.translation('messages', localedir='./lang', languages=languages, fallback=True)
 _ = translation.gettext
@@ -26,9 +29,6 @@ _ = translation.gettext
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# connect to memcached
-mc = memcache.Client(['127.0.0.1:11211'], debug=0)
 
 # Create a bot object
 bot = telegram.Bot(token=API_KEY)
@@ -39,30 +39,47 @@ async def on_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     chat_id = update.message.chat_id
     user_lang = update.message.from_user.language_code
 
-    #if user_lang is in languages, send a welcome message:
-    if user_lang in languages:
-        mc.set('lang:'+str(update.message.from_user.id), user_lang);
-        await update.message.reply_text(_('welcome_message_and_send_rules_about_bot'))
-    else:
-        # Send a welcome message and language selection keyboard
-        welcome_msg = "Hello! Your language is {}. Please choose another language, which is closer to you and in which the bot can communicate.".format(user_lang)
-        keyboard =[
-                [
-                    InlineKeyboardButton("English 🇬🇧", callback_data="lang:en"),
-                    InlineKeyboardButton("Русский 🇷🇺", callback_data="lang:ru"),
-                    InlineKeyboardButton("Español 🇪🇸", callback_data="lang:es"),
+    print(update)
+
+    if update.message.chat.type == Chat.PRIVATE:
+        #if user_lang is in languages, send a welcome message:
+        if user_lang in languages:
+            #save user_lang to database
+            values = {'id': update.message.from_user.id, 'lang': user_lang, 'name': update.message.from_user.full_name}
+            db.set('users', values)
+            await update.message.reply_text(Game.bot_intro_user())
+        else:
+            # Send a welcome message and language selection keyboard
+            welcome_msg = "Hello! Your language is {}. Please choose another language, which is closer to you and in which the bot can communicate.".format(user_lang)
+            keyboard =[
+                    [
+                        InlineKeyboardButton("English 🇬🇧", callback_data="lang:en"),
+                        InlineKeyboardButton("Русский 🇷🇺", callback_data="lang:ru"),
+                        InlineKeyboardButton("Español 🇪🇸", callback_data="lang:es"),
+                    ]
                 ]
-            ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await update.message.reply_text(text=welcome_msg, reply_markup=reply_markup)
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await update.message.reply_text(text=welcome_msg, reply_markup=reply_markup)
+    else:
+        #check if user admin
+        #delete games in this chat (clean chat games table)
+        #save ID who start the game
+        #create game table
+        #values = {'id': update.message.from_user.id}
+        #db.set('games', values)
+        msg, markup = Game.join_game_button(InlineKeyboardMarkup,InlineKeyboardButton)
+        await update.message.reply_text(text=msg, reply_markup=markup)
+        msg, markup = Game.start_game_button(InlineKeyboardMarkup,InlineKeyboardButton)
+        await update.message.reply_text(text=msg, reply_markup=markup)
+
 
 async def temp(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Get the chat ID and language preference
     user_id = update.message.from_user.id
    
-    #get user_lang from memcached
-    user_lang = mc.get('lang:' + str(user_id))
-    await update.message.reply_text('Language is: ' + user_lang)
+    #get user_lang from database
+    user_lang = db.get_by_id('users', user_id)
+    await update.message.reply_text('Language is: ' + user_lang['lang'])
 
 async def Callback_button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     #Parses the CallbackQuery and updates the message text or sends an alert message
@@ -74,12 +91,25 @@ async def Callback_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     if command == 'lang':
         lang = query.data.split(':')[1]
         await select_lang(query,lang)
+    elif command == 'game':
+        subcommand = query.data.split(':')[1]
+        if subcommand == 'join':
+           # register user on game in unic game table
+           await bot.answer_callback_query(query.id,text=_("request_to_join_game_success"),show_alert=True)
+        if subcommand == 'start':
+           # check if user is game owner (who send /start command)
+           # get Game.start_game_routines() and reply to the user
+           #Game.start_game_routines(members)
+           await bot.answer_callback_query(query.id,text=_("request_to_start_game_success"),show_alert=True)
+        else:
+            return None   
     else:
         await bot.answer_callback_query(query.id,text="Wrong option",show_alert=True)
     
 async def select_lang(query,lang):
-    #save user_lang to memcached
-    mc.set('lang:'+str(query.from_user.id), lang);
+    #save user_lang to database
+    values = {'id': query.from_user.id, 'lang': lang, 'name': query.from_user.full_name}
+    db.set('users', values)
     await query.edit_message_text(text=_('selected_language')+f": {lang}")
 
 
@@ -140,26 +170,28 @@ async def new_in_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             # will add the user to "user_ids".
             # We're including this here for the sake of the example.
             logger.info("%s unblocked the bot", cause_name)
-            context.bot_data.setdefault("user_ids", set()).add(chat.id)
         elif was_member and not is_member:
             logger.info("%s blocked the bot", cause_name)
-            context.bot_data.setdefault("user_ids", set()).discard(chat.id)
+            db.del_by_id('users', chat.id)
     elif chat.type in [Chat.GROUP, Chat.SUPERGROUP]:
         if not was_member and is_member:
             logger.info("%s added the bot to the group %s", cause_name, chat.title)
-            context.bot_data.setdefault("group_ids", set()).add(chat.id)
+            values = {'id': chat.id, 'cause_name': cause_name, 'title': chat.title}
+            db.set('chats', values)
             #send welcome messagge to all members of the group
+            await context.bot.send_message(chat_id=chat.id,text=Game.bot_intro_chat())
+            msg, markup = Game.start_game_button(InlineKeyboardMarkup,InlineKeyboardButton)
+            await context.bot.send_message(chat_id=chat.id,text=msg, reply_markup=markup)
         elif was_member and not is_member:
             logger.info("%s removed the bot from the group %s", cause_name, chat.title)
-            context.bot_data.setdefault("group_ids", set()).discard(chat.id)
+            db.del_by_id('chats', chat.id)
     else:
         if not was_member and is_member:
             logger.info("%s added the bot to the channel %s", cause_name, chat.title)
-            context.bot_data.setdefault("channel_ids", set()).add(chat.id)
             await bot.leave_chat(chat.id)
         elif was_member and not is_member:
             logger.info("%s removed the bot from the channel %s", cause_name, chat.title)
-            context.bot_data.setdefault("channel_ids", set()).discard(chat.id)
+            #context.bot_data.setdefault("channel_ids", set()).discard(chat.id)
 
 def main():
     # Create the Application and pass it bot's token.
