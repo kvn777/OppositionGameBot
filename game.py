@@ -54,5 +54,16 @@ class Game:
         print(ChatMember)
         return  _ ('start_game_routines_message')
     
+    def add_gamer(chat_id,user_id,name):
+        chat_id = abs(chat_id)
+        db.create_game_tables(game_id=chat_id)
+        #check if user already join
+        values = db.get('game_'+str(chat_id),where='id='+str(user_id))
+        if values:
+            return  False
+        else:
+            values = {'id': user_id, 'chat_id': chat_id, 'name': name}
+            db.set('game_'+str(chat_id), values)
+            return  True
 
     

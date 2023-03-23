@@ -48,16 +48,15 @@ class Database:
 
     def create_game_tables(self, game_id=None):
         if game_id:
-            self.cursor.execute('''
-                CREATE TABLE IF NOT EXISTS users{table} (
+            self.cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS game_{game_id} (
                     id INTEGER PRIMARY KEY,
                     name TEXT NOT NULL,
                     role TEXT NULL,
-                    mc INTEGER,
-                    round INTEGER,
-
+                    mc INTEGER NULL,
+                    round INTEGER NULL
                 )
-            ''', (game_id,))
+            ''')
 
             # save changes to database
             self.conn.commit() 

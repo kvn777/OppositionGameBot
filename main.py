@@ -61,21 +61,28 @@ async def on_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             reply_markup = InlineKeyboardMarkup(keyboard)
             await update.message.reply_text(text=welcome_msg, reply_markup=reply_markup)
     else:
-        #check if user admin
-        #delete games in this chat (clean chat games table)
-        #save ID who start the game
-        #create game table
-        #values = {'id': update.message.from_user.id}
-        #db.set('games', values)
-        msg, markup = Game.join_game_button(InlineKeyboardMarkup,InlineKeyboardButton)
-        await update.message.reply_text(text=msg, reply_markup=markup)
-        msg, markup = Game.start_game_button(InlineKeyboardMarkup,InlineKeyboardButton)
-        await update.message.reply_text(text=msg, reply_markup=markup)
+        #check if user telegram chat admin
+        chat_id = update.message.chat_id
+        chat_admin = await context.bot.get_chat_administrators(chat_id)
+        chat_admins = [admin.user.id for admin in chat_admin]
+    
+        if update.message.from_user.id in chat_admins:
+            #delete games in this chat (clean chat games table)
+
+            msg, markup = Game.join_game_button(InlineKeyboardMarkup,InlineKeyboardButton)
+            await update.message.reply_text(text=msg, reply_markup=markup)
+            msg, markup = Game.start_game_button(InlineKeyboardMarkup,InlineKeyboardButton)
+            await update.message.reply_text(text=msg, reply_markup=markup)
+        else:
+            #send message that you are not admin
+            await update.message.reply_text(_('you_r_not_admin_message'))
 
 
 async def temp(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Get the chat ID and language preference
     user_id = update.message.from_user.id
+    chat_id = update.message.chat.id
+    name = query.from_user.full_name
    
     #get user_lang from database
     user_lang = db.get_by_id('users', user_id)
@@ -84,6 +91,9 @@ async def temp(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def Callback_button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     #Parses the CallbackQuery and updates the message text or sends an alert message
     query = update.callback_query
+    user_id=query.from_user.id
+    chat_id = query.message.chat.id
+    name = query.from_user.full_name
 
     # CallbackQueries need to be answered, even if no notification to the user is needed
     command = query.data.split(':')[0]
@@ -95,12 +105,27 @@ async def Callback_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         subcommand = query.data.split(':')[1]
         if subcommand == 'join':
            # register user on game in unic game table
-           await bot.answer_callback_query(query.id,text=_("request_to_join_game_success"),show_alert=True)
+           #await bot.answer_callback_query(query.id,text=_("request_to_join_game_success"),show_alert=True)
+
+           #create game table and add user to it
+           add_user=Game.add_gamer(chat_id,user_id,name)
+           if add_user:
+               await query.message.reply_text(_('join_game:')+' '+name)
+           else:
+               await bot.answer_callback_query(query.id,text=_("you_already_in_game"),show_alert=True)
+               
         if subcommand == 'start':
-           # check if user is game owner (who send /start command)
-           # get Game.start_game_routines() and reply to the user
-           #Game.start_game_routines(members)
-           await bot.answer_callback_query(query.id,text=_("request_to_start_game_success"),show_alert=True)
+           # check if user is admin
+           chat_admin = await context.bot.get_chat_administrators(chat_id)
+           chat_admins = [admin.user.id for admin in chat_admin]
+           if user_id in chat_admins:
+               #check minimal amount of players
+               #if len(Game.get_players(chat_id)) >= Game.min_players:
+               #do Game start routine
+               await bot.answer_callback_query(query.id,text=_('you_r_start_game'),show_alert=True) 
+           else:
+               #send message that you are not admin
+               await bot.answer_callback_query(query.id,text=_('you_r_not_admin_message'),show_alert=True)           
         else:
             return None   
     else:
