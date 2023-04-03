@@ -68,6 +68,7 @@ async def on_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     
         if update.message.from_user.id in chat_admins:
             #delete games in this chat (clean chat games table)
+            db.droptable('game_'+str(abs(chat_id)))
 
             msg, markup = Game.join_game_button(InlineKeyboardMarkup,InlineKeyboardButton)
             await update.message.reply_text(text=msg, reply_markup=markup)
@@ -77,16 +78,6 @@ async def on_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             #send message that you are not admin
             await update.message.reply_text(_('you_r_not_admin_message'))
 
-
-async def temp(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # Get the chat ID and language preference
-    user_id = update.message.from_user.id
-    chat_id = update.message.chat.id
-    name = query.from_user.full_name
-   
-    #get user_lang from database
-    user_lang = db.get_by_id('users', user_id)
-    await update.message.reply_text('Language is: ' + user_lang['lang'])
 
 async def Callback_button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     #Parses the CallbackQuery and updates the message text or sends an alert message
@@ -104,15 +95,23 @@ async def Callback_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     elif command == 'game':
         subcommand = query.data.split(':')[1]
         if subcommand == 'join':
-           # register user on game in unic game table
-           #await bot.answer_callback_query(query.id,text=_("request_to_join_game_success"),show_alert=True)
-
-           #create game table and add user to it
-           add_user=Game.add_gamer(chat_id,user_id,name)
+           #create game table and add user to it if game is not started
+           db.create_game_tables(game_id=abs(chat_id))
+           if not Game.is_game_started(chat_id):
+                #check max players count
+                if len(Game.get_players(chat_id)) >= Game.max_players:
+                    await bot.answer_callback_query(query.id,text=_('max_players_warn'),show_alert=True)
+                else:
+                    #add user to game
+                    add_user=Game.add_gamer(chat_id,user_id,name)
+           else:
+                add_user=False
            if add_user:
                await query.message.reply_text(_('join_game:')+' '+name)
+               if len(Game.get_players(chat_id)) >= Game.max_players:
+                   await query.message.reply_text(_('max_players_done_let_game_start'))
            else:
-               await bot.answer_callback_query(query.id,text=_("you_already_in_game"),show_alert=True)
+               await bot.answer_callback_query(query.id,text=_("you_already_in_game_or_game_started"),show_alert=True)
                
         if subcommand == 'start':
            # check if user is admin
@@ -120,16 +119,34 @@ async def Callback_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
            chat_admins = [admin.user.id for admin in chat_admin]
            if user_id in chat_admins:
                #check minimal amount of players
-               #if len(Game.get_players(chat_id)) >= Game.min_players:
-               #do Game start routine
-               await bot.answer_callback_query(query.id,text=_('you_r_start_game'),show_alert=True) 
+               if len(Game.get_players(chat_id)) >= Game.min_players:
+                    #do Game start routine
+                    await bot.answer_callback_query(query.id,text=_('you_r_start_game'),show_alert=True) 
+                    #await query.edit_message_text(text=_('game_is_started'))
+                    routine=await Game.start_game_routines(Game,chat_id,bot)
+                    if routine:
+                        await Game.round_one(chat_id,bot,InlineKeyboardMarkup,InlineKeyboardButton)
+                    else:
+                        await query.message.reply_text(_('error_start_game_pls_try_again'))
+               else:
+                    await bot.answer_callback_query(query.id,text=_('min_players_warn'),show_alert=True)               
            else:
                #send message that you are not admin
                await bot.answer_callback_query(query.id,text=_('you_r_not_admin_message'),show_alert=True)           
         else:
             return None   
+    elif command == 'getmission':
+        userid = query.data.split(':')[2]
+        round = query.data.split(':')[1]
+        #check callback mission commander
+        if  Game.check_mission_commander(chat_id,round):
+            #get player info and store in db
+            ''
+        else:
+            await bot.answer_callback_query(query.id,text=_('you_r_not_mission_commander'),show_alert=True)
+        
     else:
-        await bot.answer_callback_query(query.id,text="Wrong option",show_alert=True)
+        await bot.answer_callback_query(query.id,text="Wrong callback",show_alert=True)
     
 async def select_lang(query,lang):
     #save user_lang to database
@@ -150,7 +167,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     chat_id = update.inline_query.from_user.id
     logger.info("get inline query")
     
-    await update.message.reply_text(_('inline_q {chat_id}'))
+    #await update.message.reply_text(_('inline_q {chat_id}'))
 
 def extract_status_change(chat_member_update: ChatMemberUpdated) -> Optional[Tuple[bool, bool]]:
     """Takes a ChatMemberUpdated instance and extracts whether the 'old_chat_member' was a member
@@ -210,6 +227,7 @@ async def new_in_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         elif was_member and not is_member:
             logger.info("%s removed the bot from the group %s", cause_name, chat.title)
             db.del_by_id('chats', chat.id)
+            db.droptable('game_'+str(abs(chat.id)))
     else:
         if not was_member and is_member:
             logger.info("%s added the bot to the channel %s", cause_name, chat.title)
@@ -224,8 +242,6 @@ def main():
 
     # Command handlers
     application.add_handler(CommandHandler("start", on_start))
-    #delete in production
-    application.add_handler(CommandHandler("lang", temp))
 
     # Callback handlers
     application.add_handler(InlineQueryHandler(inline_query))

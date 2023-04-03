@@ -17,6 +17,17 @@ class Database:
         self.cursor.execute(query, tuple(values.values()))
         self.conn.commit()
 
+    def update(self, table, values, where='1=1'):
+        # create request to update data
+        query = "UPDATE {} SET {} WHERE {}".format(
+            table,
+            ', '.join(['{}=?'.format(k) for k in values.keys()]),
+            where
+        )
+        # execute request
+        self.cursor.execute(query, tuple(values.values()))
+        self.conn.commit()
+
     def get(self, table, where=None):
         # create request to select data
         query = "SELECT * FROM {}".format(table)
@@ -40,6 +51,11 @@ class Database:
     def del_by_id(self, table, id):
         cursor = self.conn.cursor()
         cursor.execute(f"DELETE FROM {table} WHERE id=?", (id,))
+        self.conn.commit()
+
+    def droptable(self, table):
+        cursor = self.conn.cursor()
+        cursor.execute(f"DROP TABLE {table}")
         self.conn.commit()
 
     def __del__(self):
