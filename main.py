@@ -2,7 +2,6 @@
 import os
 from dotenv import load_dotenv
 import logging
-import gettext
 from typing import Optional, Tuple
 #import Telegram API
 import telegram

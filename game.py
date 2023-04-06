@@ -26,7 +26,7 @@ bot = telegram.Bot(token=API_KEY)
 
 class Game:
 
-    min_players = 2
+    min_players = 5
     max_players = 15
     rolearray7=['GovernmentAgent','OppositionMember','OppositionMember','GovernmentAgent','OppositionMember','OppositionMember']
     rolearray10=['GovernmentAgent','OppositionMember','OppositionMember','GovernmentAgent','OppositionMember','OppositionLeader','Prosecutor','OppositionMember','OppositionMember']
