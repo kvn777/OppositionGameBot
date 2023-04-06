@@ -1,5 +1,5 @@
 # OppositionGameBot
-Telegram bot to play resistance, online
+Telegram bot to play OppositionGame, online
 
 You need to create .env file with following variables:
 ```bash
