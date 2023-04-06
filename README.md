@@ -10,3 +10,9 @@ LANGUAGES="ru,en,es"
 
 I use SQLite3 for database, because it is lightweight and fast.
 This project created for education purposes, I'm new in python.
+
+
+To start the bot
+```bash
+python3 main.py
+```
