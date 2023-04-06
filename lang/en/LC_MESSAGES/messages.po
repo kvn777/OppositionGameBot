@@ -1,0 +1,370 @@
+# Translations template for OppositionBot.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the OppositionBot
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OppositionBot 1.0\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-04-06 18:07+0300.PO-Revision-Date: 2023-04-06 20:40+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1.X-Generator: Poedit 3.1.1.\n"
+"X-Generator: Poedit 3.1.1\n"
+
+#: game.py:29
+msgid "GovernmentAgent"
+msgstr "Government Agent"
+
+#: game.py:30
+msgid "OppositionMember"
+msgstr "Opposition Member"
+
+#: game.py:31
+msgid "OppositionLeader"
+msgstr "Opposition Leader"
+
+#: game.py:32
+msgid "Prosecutor"
+msgstr "Prosecutor"
+
+#: game.py:33
+msgid "Bodyguard"
+msgstr "Bodyguard"
+
+#: game.py:34
+msgid "SecretAgent"
+msgstr "Secret Agent"
+
+#: game.py:41
+msgid "bot_intro_chat_message"
+msgstr ""
+"Welcome to the game Opposition!\n"
+"\n"
+"Request game rules /rules (clickable and you can ask the rules in the bot's private message).\n"
+"\n"
+"First of all, all participants should start a dialog with the bot @OppositionGameBot (click on the bot's name, open the dialog and press Start), so that the bot can send you messages.\n"
+"Create a chat room (or use an existing chat room), add the bot to the chat room.\n"
+"Create a video conference between players (Telegram, Google or Discord whatever), have the chat administrator send /start to the chat - and I'll distribute the roles and do the necessary voting.\n"
+"\n"
+"You need five to 15 people to play."
+
+#: game.py:44
+msgid "bot_intro_user_message"
+msgstr ""
+"Welcome to the game Opposition!\n"
+"\n"
+"Request game rules /rules (clickable and you can ask the rules in the bot's private message).\n"
+"\n"
+"Create a chat room (or use an existing chat room), add the bot to the chat room.\n"
+"First of all, all participants should start a dialog with the bot @OppositionGameBot (click on the bot's name, open the dialog and press Start), so that the bot can send you messages.\n"
+"Create a video conference between players (Telegram, Google or Discord whatever), have the chat administrator send /start to the chat - and I'll distribute the roles and do the necessary voting.\n"
+"\n"
+"You need five to 15 people to play."
+
+#: game.py:47
+msgid "rules_about_bot_message"
+msgstr ""
+"Welcome to the game Opposition!\n"
+"\n"
+"Request game rules /rules (clickable and you can ask the rules in the bot's private message).\n"
+"\n"
+"First of all, all participants should start a dialog with the bot @OppositionGameBot (click on the bot's name, open the dialog and press Start), so that the bot can send you messages.\n"
+"Create a chat room (or use an existing chat room), add the bot to the chat room.\n"
+"Create a video conference between players (Telegram, Google or Discord whatever), have the chat administrator send /start to the chat - and I'll distribute the roles and do the necessary voting"
+
+#: game.py:50
+msgid "rules_about_game_message"
+msgstr ""
+"Prologue\n"
+"\n"
+"Opposition is a psychological game (one of those games, the familiar Mafia). Players are either the Opposition, led by an Opposition Leader*, whose goal is to overthrow the current government, or they become undercover agents, seeking to foil the Opposition's plans, led by a Prosecutor*.\n"
+"\n"
+"The Opposition wins if they successfully hold three rallies. The victory goes to Government Agents if the 3 rallies are failed. The agents can also win if the Opposition fails to organise a rally team (5 disruptions in the vote for the composition of the rally). In addition, if the Opposition successfully holds three rallies, "
+"the Prosecutor arrests one of the Opposition members and if it is the Leader of the Opposition - the Agents of the Government win*.\n"
+"\n"
+"The main thing about this game is that players can express their opinions at any time. Communication, intuitive insights, lying, bluffing, logic, interaction and strategic thinking are essential to winning this game. But please don't correspond in private to keep the game fair and interesting.\n"
+"\t'* Extra roles are only entered when playing with 7 people or more.\n"
+"\n"
+"Rules of the game.\n"
+"All players are randomly assigned roles (received in their inbox), the roles are divided into Opposition and Government Agents, as the number of players increases, new roles are introduced and new team options become available.Government agents are told (in the private area) the names of other agents (Except in games of 10 or "
+"more people, where the role of Secret Agent is added and not revealed to anyone, but acting on behalf of Government Agents)One of the players (either a Government Agent or an Opposition member) is chosen as the rally organiser and chooses the required number of players for the rally (I will write down how many players to "
+"choose at what point)All players then discuss the choice of Rally Leader and at the same time publicly vote on whether or not to accept the composition of the team (the voting form will be in the chatroom)\n"
+"If the vote for the rally line-up fails, the turn is passed to the next player and he is appointed Rally Leader, chooses a new rally line-up, etc. If the composition of the rally fails 5 times, the Agents win.If the vote for the rally line-up is successful - an anonymous vote for the rally will be sent to those going to the "
+"rally. Opposition members will have no choice but to vote for the rally, while government agents will be allowed to vote both for and against the rally. If there is at least one vote against* the rally, the rally is deemed not to have taken place. (*Except for one mission with a 7-10 person game, where two votes against will "
+"be required)\n"
+"If the rally takes place, the Opposition team gets a victory point.If the rally fails, the Agents' team gets a point.Game continues until one team gets 3 points.\n"
+"\n"
+"Roles in the game\n"
+"\n"
+"Up to 7 people in the game are just ordinary Opposition members and ordinary Government Agents.\n"
+"For games with 7 to 9 players, the roles are added: Opposition Leader, who is notified at the start (by the bot in the Personal Line) of all (except Secret Agent) Government Agents and the Prosecutor, who, in case of defeat of the Agents, arrests one of the Opposition members and if it is their Leader - the Agents win.\n"
+"In a game of 10 or more:\n"
+"The Agents get the roles: Provocateur and Secret Agent, the Provocateur's identity becomes known to the Leader's bodyguard and the Secret Agent's identity is not known to anyone.A Bodyguard of the Leader is added to the Opposition team, who is told the identity of the Opposition Leader and Provocateur (without specifying who "
+"is who), his goal is to protect the Leader and if the Opposition wins, the Prosecutor will arrest the Bodyguard (as a possible Leader) or another ordinary member of the Opposition."
+
+#: game.py:53
+msgid "join_game_button_message"
+msgstr "To join the game, click the button below this message."
+
+#: game.py:56
+msgid "join_game_button_text"
+msgstr "I'm in!"
+
+#: game.py:63
+msgid "start_game_button_message"
+msgstr "Once enough people have been added, the chat administrator should click the button below."
+
+#: game.py:66
+msgid "start_game_button_text"
+msgstr "Start Game!"
+
+#: game.py:73
+msgid "vote_meeting_team"
+msgstr ""
+"You need to choose whether or not you agree with this lineup\n"
+"\n"
+"The result of your vote will be posted."
+
+#: game.py:76 game.py:87 main.py:261
+msgid "Confirm"
+msgstr "Confirm"
+
+#: game.py:77 game.py:88 main.py:261 game.py:84
+msgid "vote_meeting_message"
+msgstr ""
+"Only the rally participants vote! \n"
+"\n"
+"You need to choose whether you want to make this rally a success or you want to prevent it.Members of the Opposition always vote FOR, Agents of the Government vote at their discretion.\n"
+"The vote is secret."
+
+#: game.py:149
+msgid "your_role: "
+msgstr "Your role: "
+
+#: game.py:153
+msgid "your_identity_and_OppositionLeader_known_Bodyguard_but"
+msgstr "Your identity and the Opposition Leader's identity is known to the Bodyguard, but it does not reveal who is who, you can play it to make it think you are the Opposition Leader."
+
+#: game.py:156
+msgid "your_mission_find_OppositionLeader_and_arrest"
+msgstr "Your goal is to find the Opposition Leader and arrest him if your team loses."
+
+#: game.py:159
+msgid "all_agents_known_OppositionLeader_but"
+msgstr "All identities of Government Agents are known to the Opposition Leader, except yours, but you also do not know who else is playing for the Government."
+
+#: game.py:160 game.py:174
+msgid "your_mission_disrupt_3_meetings_sabotage_5_election"
+msgstr "You are a member of the Agents of Government team, and your goal is to disrupt 3 rallies or sabotage 5 consecutive elections."
+
+#: game.py:173 game.py:191
+msgid "agents_in_game: "
+msgstr "Government agents in this game: "
+
+#: game.py:176
+msgid "you_are_OppositionMember_your_mission_but_OppositionLeader"
+msgstr "You are an Opposition member, your goal is to successfully hold 3 rallies, but if you fail, you must prevent the Agents from revealing and arresting the Opposition Leader or your team will lose."
+
+#: game.py:178
+msgid "you_are_OppositionMember_your_mission"
+msgstr "You are an Opposition member, your goal is to successfully hold 3 rallies."
+
+#: game.py:192
+msgid "your_mission_lead_and_not_be_arrested"
+msgstr "Your goal is to successfully hold 3 rallies and not be exposed if your team loses so the Prosecutor does not arrest you."
+
+#: game.py:201
+msgid "Leader_and_Provocateur: "
+msgstr "Opposition Leader and Provocateur in this game (not necessarily in that order): "
+
+#: game.py:202
+msgid "your_mission_protect_Leader_and_to_be_arrested"
+msgstr "Your goal is to protect the Leader of the Opposition so the Prosecutor can arrest you or another rank-and-file member of the Opposition."
+
+#: game.py:208
+msgid "Cant_send_to: "
+msgstr "Can't send message: "
+
+#: game.py:208
+msgid "pls_start_message_with_bot_PM"
+msgstr "please start messaging the bot @OppositionGameBot (click on the bot's name, open the dialog, and click \"Start\") "
+
+#: game.py:292 game.py:341 main.py:165 main.py:169
+msgid "mission_commander: "
+msgstr "The rally organiser: "
+
+#: game.py:292 game.py:341 main.py:165
+msgid "chose_players_next_meeting"
+msgstr "You need to choose your choice of protesters, discuss your choices with the game participants, listen to their opinions, state your own, and make your choice:"
+
+#: game.py:317 game.py:327
+msgid "list_of_players: "
+msgstr "Players: "
+
+#: game.py:326
+msgid "role"
+msgstr "role"
+
+#: game.py:327 main.py:273 main.py:298
+msgid "game_ended_opposition_win"
+msgstr "Game complete. Opposition wins!"
+
+#: game.py:341
+msgid "round: "
+msgstr "Round: "
+
+#: main.py:85 main.py:145
+msgid "you_r_not_admin_message"
+msgstr "You are not admin!"
+
+#: main.py:109
+msgid "max_players_warn"
+msgstr "The maximum number of participants is reached"
+
+#: main.py:116
+msgid "you_r_not_start_bot_pls_pm_bot"
+msgstr "You have not started the bot, please email me"
+
+#: main.py:120
+msgid "join_game:"
+msgstr "Will play:"
+
+#: main.py:122
+msgid "max_players_done_let_game_start"
+msgstr "The maximum number of players has already registered, let's get started! Click the game start button."
+
+#: main.py:124
+msgid "you_already_in_game_or_game_started"
+msgstr "You are already in the game or the game has started without you."
+
+#: main.py:134
+msgid "you_r_start_game"
+msgstr "You are start the game!"
+
+#: main.py:140
+msgid "error_start_game_pls_try_again"
+msgstr "Game start error, try again later."
+
+#: main.py:142
+msgid "min_players_warn"
+msgstr "There is no minimum number of players.."
+
+#: main.py:156
+msgid "go_to_mission: "
+msgstr "Will go to the rally: "
+
+#: main.py:165
+msgid "u_need_choose_N_players:"
+msgstr "You need to select players:"
+
+#: main.py:169
+msgid "all_players_selected"
+msgstr "Rally participants recruited"
+
+#: main.py:175
+msgid "you_r_not_mission_commander"
+msgstr "You are not the rally organiser!"
+
+#: main.py:193
+msgid "all_voted_mission_team_confirmed"
+msgstr "All voted, rally team approved."
+
+#: main.py:193 main.py:205
+msgid "voters_confirmed"
+msgstr "Voted Approved: "
+
+#: main.py:193 main.py:205
+msgid "voters_against"
+msgstr "Voted Against: "
+
+#: main.py:201 main.py:272 main.py:275 main.py:294 main.py:297
+msgid "pls_admin_enter_start_command"
+msgstr "Please enter /start command"
+
+#: main.py:202 main.py:276 main.py:295
+msgid "game_ended_agents_win"
+msgstr "Game is over. The government has won!"
+
+#: main.py:205
+msgid "mission_team_fail"
+msgstr "The rally team has failed"
+
+#: main.py:205
+msgid "times_in_row"
+msgstr "times in row"
+
+#: main.py:209
+msgid "you_r_voted"
+msgstr "You are voted"
+
+#: main.py:209
+msgid "voted: "
+msgstr "voted: "
+
+#: main.py:223
+msgid "voted"
+msgstr "voted"
+
+#: main.py:254 main.py:259
+msgid "all_voted"
+msgstr "Everyone voted"
+
+#: main.py:254
+msgid "mission_failed"
+msgstr "The rally fails"
+
+#: main.py:259
+msgid "mission_succeeded"
+msgstr "The rally was a success"
+
+#: main.py:261
+msgid "poll_stat"
+msgstr "Voting statistics"
+
+#: main.py:262
+msgid "current_situation"
+msgstr "Current situation"
+
+#: main.py:262
+msgid "round"
+msgstr "round"
+
+#: main.py:262
+msgid "gov"
+msgstr "government"
+
+#: main.py:262
+msgid "opp"
+msgstr "opposition"
+
+#: main.py:268
+msgid "prosecutor_can_arrest_leader_opposition"
+msgstr "The Prosecutor can arrest one of the participants in the game and if he arrests the Leader of the Opposition, the Government team wins the game!"
+
+#: main.py:281
+msgid "you_r_not_voters"
+msgstr "You cannot vote"
+
+#: main.py:288
+msgid "you_not_prosecutor"
+msgstr "You are not prosecutor"
+
+#: main.py:291
+msgid "prosecutor_arrest"
+msgstr "Prosecutor arrested: "
+
+#: main.py:306
+msgid "selected_language"
+msgstr "selected language"
+
+#: main.py:314
+msgid "Reply_not_found"
+msgstr "Reply not found"

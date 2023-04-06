@@ -69,11 +69,16 @@ class Database:
                     id INTEGER PRIMARY KEY,
                     name TEXT NOT NULL,
                     role TEXT NULL,
-                    mc INTEGER NULL,
-                    round INTEGER NULL
+                    round INTEGER NULL,
+                    vote INTEGER NULL
                 )
             ''')
-
+            self.cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS mc_{game_id} (
+                    id INTEGER PRIMARY KEY,
+                    user_id INTEGER NULL
+                )
+            ''')
             # save changes to database
             self.conn.commit() 
 
@@ -93,6 +98,15 @@ class Database:
                 cause_name TEXT NOT NULL
             )
         ''')
-
+        self.cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS options (
+                    id INTEGER PRIMARY KEY,
+                    lang TEXT NOT NULL,
+                    round INTEGER NULL,
+                    gov INTEGER NULL,
+                    opp INTEGER NULL,
+                    failcnt INTEGER NULL
+                )
+            ''')
         # save changes to database
         self.conn.commit()        
