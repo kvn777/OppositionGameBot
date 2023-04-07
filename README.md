@@ -11,6 +11,11 @@ LANGUAGES="ru,en,es"
 I use SQLite3 for database, because it is lightweight and fast.
 This project created for education purposes, I'm new in python.
 
+Dependensies
+```bash
+pip install python-telegram-bot --upgrade
+pip install python-dotenv
+```
 
 To start the bot
 ```bash
