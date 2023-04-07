@@ -8,17 +8,18 @@ from dotenv import load_dotenv
 from db import Database
 load_dotenv()
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
 # create database object
 db = Database(os.getenv("db_file"))
 API_KEY = os.getenv("API_KEY")
 
 languages = os.getenv('LANGUAGES').split(',')
 
-translation_ = gettext.translation('messages', localedir='./lang', languages=languages, fallback=False)
+translation_ = gettext.translation('messages', localedir=current_dir+'/lang', languages=languages, fallback=False)
 translation={}
-translation['ru'] = gettext.translation(domain='messages', localedir='./lang', languages=['ru'])
-translation['en'] = gettext.translation(domain='messages', localedir='./lang', languages=['en'])
-#translation['es'] = gettext.translation(domain='messages', localedir='./lang', languages=['es'])
+translation['ru'] = gettext.translation(domain='messages', localedir=current_dir+'/lang', languages=['ru'])
+translation['en'] = gettext.translation(domain='messages', localedir=current_dir+'/lang', languages=['en'])
+#translation['es'] = gettext.translation(domain='messages', localedir=current_dir+'/lang', languages=['es'])
 _ = translation_.gettext
 
 # Create a bot object
