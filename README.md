@@ -1,5 +1,5 @@
 # OppositionGameBot
-Telegram bot to play OppositionGame, online
+Telegram bot to play OppositionGame, online. Bot link https://t.me/OppositionGameBot
 
 You need to create .env file with following variables:
 ```bash
@@ -13,7 +13,7 @@ This project created for education purposes, I'm new in python.
 
 Dependensies
 ```bash
-pip install python-telegram-bot --upgrade
+pip install python-telegram-bot --upgradeCancel changes
 pip install python-dotenv
 ```
 
