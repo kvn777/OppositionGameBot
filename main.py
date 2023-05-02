@@ -177,11 +177,11 @@ async def Callback_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
                 players=db.get('game_'+str(abs(chat_id)),where='round='+str(round))
                 ids = [row['id'] for row in players]
                 
-                message=_('mission_commander: ')+user[0]['name']+'\n'+_('chose_players_next_meeting')+'\n\n'+_('u_need_choose_N_players:')+' '+str(round_count_players)
+                message=_('chose_players_next_meeting')+'\n\n'+_('u_need_choose_N_players:')+' '+str(round_count_players)
                 markup = Game.players_buttons(chat_id,round,InlineKeyboardMarkup,InlineKeyboardButton,where='id NOT IN ('+', '.join(str(id) for id in ids)+')')
                 await query.edit_message_text(text=message, reply_markup=markup)
             else:
-                message=_('mission_commander: ')+user[0]['name']+'\n'+_('all_players_selected')
+                message=_('all_players_selected')
                 await query.edit_message_text(text=message)
                 #vote to go to meeting message with buttons
                 msg, markup = Game.vote_meeting_team_button(user_lang,InlineKeyboardMarkup,InlineKeyboardButton)
@@ -198,7 +198,7 @@ async def Callback_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
             Confirm=[]
             Against=[]
             for player in voted_players:
-                if player['vote']>0:
+                if int(player['vote'])>0:
                     Confirm.append(player['name'])
                 else:
                     Against.append(player['name'])
@@ -243,18 +243,18 @@ async def Callback_button(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
                 Confirm=[]
                 Against=[]
                 for player in voted_players:
-                    if player['vote']>0:
+                    if int(player['vote'])>0:
                         Confirm.append(player['name'])
                     else:
                         Against.append(player['name'])
                
                 failcount=0
                 round=options['round']
-                if options['gov']>0:
+                if int(options['gov'])>0:
                     gov=options['gov']
                 else:
                     gov=0
-                if options['opp']>0:
+                if int(options['opp'])>0:
                     opp=options['opp']
                 else:
                     opp=0

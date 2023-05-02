@@ -293,7 +293,8 @@ class Game:
         #get round one mission commander
         mc = db.get('mc_'+str(abs(chat_id)),where='id=1')
         user=db.get('users',where='id='+str(mc[0]['user_id']))
-        message=_('mission_commander: ')+user[0]['name']+'\n'+_('chose_players_next_meeting')
+        await bot.send_message(chat_id=chat_id,text=_('mission_commander: ')+user[0]['name'])
+        message=_('chose_players_next_meeting')
         markup = Game.players_buttons(chat_id,1,InlineKeyboardMarkup,InlineKeyboardButton)
         await bot.send_message(chat_id=chat_id,text=message, reply_markup=markup)
     
@@ -334,7 +335,8 @@ class Game:
         #get next mc
         mc = db.get('mc_'+str(abs(chat_id)),where='id='+str(round))
         user=db.get('users',where='id='+str(mc[0]['user_id']))
-        message=_('round: ')+str(round_real)+'\n'+_('mission_commander: ')+user[0]['name']+'\n'+_('chose_players_next_meeting')
+        await bot.send_message(chat_id=chat_id,text=_('round: ')+str(round_real)+'\n'+_('mission_commander: ')+user[0]['name'])
+        message=_('chose_players_next_meeting')
         markup = Game.players_buttons(chat_id,round,InlineKeyboardMarkup,InlineKeyboardButton)
         await bot.send_message(chat_id=chat_id,text=message, reply_markup=markup)
         db.update('game_'+str(abs(chat_id)),values={'round':None,'vote':None})
